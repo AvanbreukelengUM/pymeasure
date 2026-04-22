@@ -22,6 +22,8 @@
 # THE SOFTWARE.
 #
 
+""" Please adjust amplitude and frequency ranges according to your RedPitaya model"""
+
 
 import datetime
 import numpy as np
@@ -175,7 +177,7 @@ class AnalogOutputFastChannel(Channel):
         values=SHAPES,
     )
 
-    FREQUENCIES = [1e-6, 50e6] #in Hz
+    FREQUENCIES = [1e-6, 60e6] #in Hz # Adjust according to RedPitaya model
     frequency = Instrument.control(
         "SOUR{ch}:FREQ:FIX?",
         "SOUR{ch}:FREQ:FIX %f",
@@ -187,7 +189,7 @@ class AnalogOutputFastChannel(Channel):
         values= FREQUENCIES,
     )
 
-    AMPLITUDES = [0, +1] #in V
+    AMPLITUDES = [0, +2] #in V #Adjust according to RedPitaya model
     amplitude = Instrument.control(
         "SOUR{ch}:VOLT?",
         "SOUR{ch}:VOLT %f",
@@ -410,6 +412,7 @@ class RedPitayaScpi(SCPIMixin, Instrument):
     TRIGGER_SOURCES = ('DISABLED', 'NOW', 'CH1_PE', 'CH1_NE', 'CH2_PE', 'CH2_NE',
                        'EXT_PE', 'EXT_NE', 'AWG_PE', 'AWG_NE')
 
+    GAINS = ('LV','HV')
 
     LV_MAX = 1
     HV_MAX = 20
@@ -418,7 +421,7 @@ class RedPitayaScpi(SCPIMixin, Instrument):
 
     def __init__(self,
                  adapter=None,
-                 ip_address: str = '10.42.0.78', port: int = 5000, name="Redpitaya SCPI",
+                 ip_address: str = '169.254.121.34', port: int = 5000, name="Redpitaya SCPI",
                  read_termination='\r\n',
                  write_termination='\r\n',
                  **kwargs):
@@ -578,6 +581,25 @@ class RedPitayaScpi(SCPIMixin, Instrument):
         cast=int,
         values=[-2**13, 2**13],
     )
+    # "ACQ:SOUR{ch}:GAIN?",
+    acq_gain1 = Instrument.control("ACQ:SOUR1:GAIN?",
+        "ACQ:SOUR1:GAIN %s",
+        """Control the gain of the selected fast analog input either 'LV' or 'HV'
+         (see jumpers on boards)
+        'LV' set the returned values in the range [-1, 1]V and 'HV' in the range [-20, 20]V
+        """,
+        validator=strict_discrete_set,
+        values=['LV', 'HV'],
+    )
+    acq_gain2 = Instrument.control("ACQ:SOUR2:GAIN?",
+        "ACQ:SOUR2:GAIN %s",
+        """Control the gain of the selected fast analog input either 'LV' or 'HV'
+         (see jumpers on boards)
+        'LV' set the returned values in the range [-1, 1]V and 'HV' in the range [-20, 20]V
+        """,
+        validator=strict_discrete_set,
+        values=['LV', 'HV'],
+    )
 
     # direct call to the SCPI command "ACQ:TRig:DLY:NS?" seems not to be working...
     @property
@@ -615,7 +637,7 @@ class RedPitayaScpi(SCPIMixin, Instrument):
 
 if __name__ == '__main__':
     print("joy")
-    inst = RedPitayaScpi(ip_address='10.42.0.77')
+    inst = RedPitayaScpi(ip_address='169.254.121.34')
     inst.aout1.amplitude = 0.05
     inst.aout1.shape="SINE"
     inst.aout1.frequency=10e3
