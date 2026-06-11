@@ -22,8 +22,8 @@
 # THE SOFTWARE.
 #
 
-""" Please adjust amplitude and frequency ranges according to your RedPitaya model"""
-
+""" Please adjust amplitude and frequency ranges according to your RedPitaya model
+    Tested with STEMlab 125-14 Pro (Gen 2) """
 
 import datetime
 import numpy as np
@@ -103,9 +103,13 @@ class AnalogOutputSlowChannel(Channel):
     voltage = Channel.setting(
         "ANALOG:PIN AOUT{ch}, %f",
         """ Set the voltage on the corresponding analog input channel, range is [0, 1.8]V""",
-        validator=truncated_range,
+        validator=strict_range,
         values=[0, 1.8],
     )
+
+    def reset(self):
+        self.write("ANALOG:RST")
+        pass
 
 
 class AnalogInputFastChannel(Channel):
@@ -189,22 +193,25 @@ class AnalogOutputFastChannel(Channel):
         values= FREQUENCIES,
     )
 
-    AMPLITUDES = [0, +2] #in V #Adjust according to RedPitaya model
+
+    # AMPLITUDES = [0.001, +2] #in V #Adjust according to RedPitaya model
+    AMPLITUDES = [-2, +2] #in V #Adjust according to RedPitaya model
     amplitude = Instrument.control(
         "SOUR{ch}:VOLT?",
         "SOUR{ch}:VOLT %f",
         """ A floating point property that controls the voltage amplitude of the
-        output waveform in V, from 0 V to 1 V.""",
+        output waveform in V, from 0 V to 2 V.""",
         validator=strict_range,
         values= AMPLITUDES,
     )
 
-    OFFSETS = [-0.995, +0.995] #in V
+    # OFFSETS = [-0.995, +0.995] #in V
+    OFFSETS = [-1.999, +1.999] #in V
     offset = Instrument.control(
         "SOUR{ch}:VOLT:OFFS?",
         "SOUR{ch}:VOLT:OFFS %f",
         """ A floating point property that controls the voltage offset of the
-        output waveform in V, from -1 V to 1 V, depending on the set
+        output waveform in V, from -2 V to 2 V, depending on the set
         voltage amplitude (maximum offset = (Vmax - amplitude) / 2).
         """,
         validator=strict_range,
@@ -390,7 +397,12 @@ class AnalogOutputFastChannel(Channel):
         validator=strict_range,
         values=PERIOD,
     )
-
+    waveform_data= Instrument.control(
+        "SOUR{ch}:TRAC:DATA:DATA?",
+        "SOUR{ch}:TRAC:DATA:DATA %s",
+        """Import data for one period of an arbitrary waveform (should be exactly 16384 samples).
+        If fewer samples are provided, the output frequency will be higher."""
+    )
 
 class RedPitayaScpi(SCPIMixin, Instrument):
     """This is the class for the Redpitaya reconfigurable board
