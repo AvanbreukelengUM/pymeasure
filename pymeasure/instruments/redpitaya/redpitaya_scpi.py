@@ -397,6 +397,7 @@ class AnalogOutputFastChannel(Channel):
         validator=strict_range,
         values=PERIOD,
     )
+
     waveform_data= Instrument.control(
         "SOUR{ch}:TRAC:DATA:DATA?",
         "SOUR{ch}:TRAC:DATA:DATA %s",
