@@ -114,6 +114,7 @@ class AnalogOutputSlowChannel(Channel):
 
 class AnalogInputFastChannel(Channel):
 
+    GAINS = ('LV','HV')
     gain = Instrument.control(
         "ACQ:SOUR{ch}:GAIN?", "ACQ:SOUR{ch}:GAIN %s",
         """Control the gain of the selected fast analog input either 'LV' or 'HV'
@@ -331,7 +332,6 @@ class AnalogOutputFastChannel(Channel):
         values=DIRECTION,
     )
 
-
     # Burst mode
     #Not working at the moment
 
@@ -425,7 +425,6 @@ class RedPitayaScpi(SCPIMixin, Instrument):
     TRIGGER_SOURCES = ('DISABLED', 'NOW', 'CH1_PE', 'CH1_NE', 'CH2_PE', 'CH2_NE',
                        'EXT_PE', 'EXT_NE', 'AWG_PE', 'AWG_NE')
 
-    GAINS = ('LV','HV')
 
     LV_MAX = 1
     HV_MAX = 20
@@ -652,8 +651,8 @@ if __name__ == '__main__':
     print("joy")
     inst = RedPitayaScpi(ip_address='169.254.121.34')
     inst.aout1.amplitude = 0.05
-    inst.aout1.shape="SINE"
-    inst.aout1.frequency=10e3
+    inst.aout1.shape= "SINE"
+    inst.aout1.frequency= 10e3
     inst.aout1.enable = True
     inst.aout1.gen_trigger_source = "INT"
     inst.aout1.run()
