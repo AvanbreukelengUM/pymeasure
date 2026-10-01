@@ -195,7 +195,6 @@ class AnalogOutputFastChannel(Channel):
     )
 
 
-    # AMPLITUDES = [0.001, +2] #in V #Adjust according to RedPitaya model
     AMPLITUDES = [-2, +2] #in V #Adjust according to RedPitaya model
     amplitude = Instrument.control(
         "SOUR{ch}:VOLT?",
@@ -207,7 +206,7 @@ class AnalogOutputFastChannel(Channel):
     )
 
     # OFFSETS = [-0.995, +0.995] #in V
-    OFFSETS = [-1.999, +1.999] #in V
+    OFFSETS = [-1.999, +1.999] #in V #Adjust according to RedPitaya model
     offset = Instrument.control(
         "SOUR{ch}:VOLT:OFFS?",
         "SOUR{ch}:VOLT:OFFS %f",
