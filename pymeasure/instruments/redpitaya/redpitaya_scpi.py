@@ -100,8 +100,8 @@ class AnalogInputSlowChannel(Channel):
 class AnalogOutputSlowChannel(Channel):
     """ A slow analog output channel"""
 
-    voltage = Channel.setting(
-        "ANALOG:PIN AOUT{ch}, %f",
+    voltage = Instrument.control(
+        "ANALOG:PIN? AOUT{ch}", "ANALOG:PIN AOUT{ch},%f",
         """ Set the voltage on the corresponding analog input channel, range is [0, 1.8]V""",
         validator=strict_range,
         values=[0, 1.8],
@@ -206,7 +206,7 @@ class AnalogOutputFastChannel(Channel):
     )
 
     # OFFSETS = [-0.995, +0.995] #in V
-    OFFSETS = [-1.999, +1.999] #in V #Adjust according to RedPitaya model
+    OFFSETS = [-2, +2] #in V #Adjust according to RedPitaya model
     offset = Instrument.control(
         "SOUR{ch}:VOLT:OFFS?",
         "SOUR{ch}:VOLT:OFFS %f",
