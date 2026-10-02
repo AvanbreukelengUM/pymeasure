@@ -592,7 +592,7 @@ class RedPitayaScpi(SCPIMixin, Instrument):
         cast=int,
         values=[-2**13, 2**13],
     )
-    # "ACQ:SOUR{ch}:GAIN?",
+
     acq_gain1 = Instrument.control("ACQ:SOUR1:GAIN?",
         "ACQ:SOUR1:GAIN %s",
         """Control the gain of the selected fast analog input either 'LV' or 'HV'
