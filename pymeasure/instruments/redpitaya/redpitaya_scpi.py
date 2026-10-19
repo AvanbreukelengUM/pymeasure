@@ -332,7 +332,6 @@ class AnalogOutputFastChannel(Channel):
     )
 
     # Burst mode
-    #Not working at the moment
 
     BURST_MODES = ('CONTINUOUS', 'BURST')
     burst_mode = Instrument.control(
