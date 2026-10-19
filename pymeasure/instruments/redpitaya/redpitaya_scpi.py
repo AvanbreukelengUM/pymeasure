@@ -182,7 +182,7 @@ class AnalogOutputFastChannel(Channel):
         values=SHAPES,
     )
 
-    FREQUENCIES = [1e-6, 60e6] #in Hz # Adjust according to RedPitaya model
+    FREQUENCIES = [1e-6, 60e6] #in Hz
     frequency = Instrument.control(
         "SOUR{ch}:FREQ:FIX?",
         "SOUR{ch}:FREQ:FIX %f",
@@ -194,7 +194,7 @@ class AnalogOutputFastChannel(Channel):
         values= FREQUENCIES,
     )
 
-
+    # AMPLITUDES = [-1, +1]
     AMPLITUDES = [-2, +2] #in V #Adjust according to RedPitaya model
     amplitude = Instrument.control(
         "SOUR{ch}:VOLT?",
